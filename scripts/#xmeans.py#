@@ -1,0 +1,30 @@
+import numpy as np
+from scipy import stats
+from sklearn.cluster import KMeans
+
+class XMeans:
+    def __init__(self, k_init=2, **k_means_args):
+        self.k_init = k_init
+        self.k_means_args = k_means_args
+
+    def fit(self, X):
+        self_clusters = []
+        clusters = self.Cluster.build(X, KMeans(self.k_init, **self.k_means_args).fit(X))
+        self.__recursively_split(clusters)
+        self.labels_ = np.empty(X.shape[0], dtype = np.intp)
+        for i, c in enumerate(self.__clusters):
+            self.labels_[c.index] = i
+        self.cluster_centers_ = np.array([c.center for c in self.__clusters])
+        self.cluster_log_likelihoods_ = np.array([c.log_likelihood() for c in self.__clusters])
+        self.cluster_sizes_= np.array([c.size for c in self.__clusters])
+        return self
+
+    def __recursively_split(self,clusters):
+        for cluster in clusters:
+            if cluster.size <= 3:
+                self.__clusters.append(cluster)
+                continue
+            k_means = KMeans(2, **self.k_means_args).fit(cluster.data)
+            c1 ,c2 = self.Cluster.build(cluster.data, k_means, cluster.index)
+            
+            
