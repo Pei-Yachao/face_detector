@@ -1,4 +1,0 @@
-#!/bin/bash
-for((i=0; i<$(ls ../config | wc -l); i++)); do
-    echo -e "../config/" >> haar.txt
-done

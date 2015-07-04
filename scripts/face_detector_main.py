@@ -58,10 +58,11 @@ class image_converter:
                 if clusters[i] == clusters[j]:
                     cln[i] += 1
         loss = 0
+        loss_index = []
         for i in range(len(cln)):
             if cln[i] == 1:
                 loss += 1
-
+                loss_index.append(i)
         print "cln:",cln
         print "face number:",len(set(clusters)) -loss
         print "cluster:",set(clusters)
@@ -72,16 +73,33 @@ class image_converter:
         #plt.title(title)
         #plt.show()
         #draw face detected rectangle
-        for face in faces:
-            for (x, y, w, h) in face:
-                cv2.rectangle(cv2.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        #for face in faces:
+        #    for (x, y, w, h) in face:
+        #        cv2.rectangle(cv2.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
        
         #show the detected faces
         cv2.imshow("Faces found",cv2.image)
         cv2.waitKey(3)
         #publish faces
+        noise_flag = False
+        cl_flag = [False for i in range(len(set(clusters)))]
+        face_categ = [0 for i in range(len(set(clusters)))]
+        for i in range(len(faces_new)):
+            for j in range(len(loss_index)):
+                if i == loss_index[j]:
+                    noise_flag = True
+            if noise_flag:
+                continue
+            elif cl_flag[clusters[i]-1]:
+                continue
+            else:
+                face_categ[clusters[i]-1] = cv2.image[faces_new[i][0]:(faces_new[i][0]+faces_new[i][2]),faces_new[i][1]:(faces_new[i][1]+faces_new[i][3])]
+                print face_categ[clusters[i]-1]
+                cl_flag[clusters[i]-1] = True
+
+
         try:
-            self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv2.image,"bgr8"))
+            self.image_pub.publish(self.bridge.cv2_to_imgmsg(face_categ[0],"bgr8"))
         except CvBridgeError, e:
             print e
 
