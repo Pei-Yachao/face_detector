@@ -25,6 +25,9 @@ image_transport
 sensor_msgs  
 std_msgs  
 rospy  
+gfortran
+liblapack-dev
+libblas-dev
 
 #installation    
 1.cd /path/to/ros_ws/src && git clone https://github.com/demulab/face_detector.git  

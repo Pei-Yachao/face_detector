@@ -29,7 +29,7 @@ class image_converter:
         self.facenum_pub = rospy.Publisher("faces_number",Int32)
         cv2.namedWindow("Face Found",1)
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/image_raw",Image,self.callback)
+        self.image_sub = rospy.Subscriber("camera/rgb/image_raw",Image,self.callback)
     def callback(self,data):
         try:
             cv2.image = self.bridge.imgmsg_to_cv2(data,"bgr8")
