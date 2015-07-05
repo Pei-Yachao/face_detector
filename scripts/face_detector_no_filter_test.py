@@ -52,8 +52,17 @@ class image_converter:
         #for face in faces:
         #    for (x, y, w, h) in face:
         #        cv2.rectangle(cv2.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        height,width,channels = cv2.image.shape
         for i in range(len(faces_new)):
-            faces_new[i] = cv2.image[faces_new[i][0]-20:(faces_new[i][0]+faces_new[i][2]+20),faces_new[i][1]-20:(faces_new[i][1]+faces_new[i][3]+20)]
+            faces_min_x = faces_new[i][0]-20
+            faces_min_y = faces_new[i][1]-20
+            faces_max_x = faces_new[i][0]+faces_new[i][2]+20
+            faces_max_y = faces_new[i][1]+faces_new[i][3]+20
+            if faces_min_x < 0: faces_min_x = 0
+            if faces_min_y < 0: faces_min_y = 0
+            if faces_max_x > width : faces_max_x = width
+            if faces_max_y > height : faces_max_y = height
+            faces_new[i] = cv2.image[faces_min_x:faces_max_x,faces_min_y:faces_max_y]
 
         try:
             if len(faces_new) > 0:

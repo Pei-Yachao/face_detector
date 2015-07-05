@@ -60,7 +60,6 @@ class image_converter:
             cv2.waitKey(3)
             for i in range(len(faces_new)):
                 self.image_pub.publish(self.bridge.cv2_to_imgmsg(faces_new[i],"bgr8"))
-            #self.facenum_pub.publish(len(set(clusters))
         except CvBridgeError, e:
             print e
         facenum = Int32(len(faces_new))

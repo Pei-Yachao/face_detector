@@ -29,7 +29,7 @@ class image_converter:
         self.facenum_pub = rospy.Publisher("faces_number",Int32)
         cv2.namedWindow("Face Found",1)
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/camera/rgb/image_raw",Image,self.callback)
+        self.image_sub = rospy.Subscriber("/image_raw",Image,self.callback)
     def callback(self,data):
         try:
             cv2.image = self.bridge.imgmsg_to_cv2(data,"bgr8")
@@ -95,9 +95,10 @@ class image_converter:
                 val = [faces_new[i][j], faces_new[i][j] + faces_new[i][j+2]]
                 val2d.append(val)
             face_lim.append(val2d)
-        print "face size limitation",face_lim
+        #print "face size limitation",face_lim
         fclim = [ [[10000,0],[10000,0]] for i in range(len(clusters))]
         #initilazation of maximum and minimum
+        height,width,channels = cv2.image.shape
         for i in range(len(faces_new)):
             for j in range(len(loss_index)):
                 if i == loss_index[j]:
@@ -113,13 +114,22 @@ class image_converter:
                     fclim[clusters[i]-1][1][0] = face_lim[i][1][0]
                 if fclim[clusters[i]-1][1][1] < face_lim[i][1][1]:
                     fclim[clusters[i]-1][1][1] = face_lim[i][1][1]
+                if fclim[clusters[i]-1][0][0] < 0:
+                    fclim[clusters[i]-1][0][0] = 0
+                if fclim[clusters[i]-1][1][0] < 0:
+                    fclim[clusters[i]-1][1][0] = 0
+                if fclim[clusters[i]-1][0][1] > width:
+                    fclim[clusters[i]-1][0][1] = width
+                if fclim[clusters[i]-1][1][1] > height :
+                    fclim[clusters[i]-1][1][1] = height
+
                 #write face
                 face_categ[clusters[i]-1] = cv2.image[fclim[clusters[i]-1][0][0]-20:fclim[clusters[i]-1][0][1]+20,fclim[clusters[i]-1][1][0]-20:fclim[clusters[i]-1][1][1]+20]
                 cl_flag[clusters[i]-1] = True
                 #print face_categ[clusters[i]-1]
-        for i in range(len(faces_new)):
-            print "x",fclim[clusters[i]-1][0][0],fclim[clusters[i]-1][0][1]
-            print "y",fclim[clusters[i]-1][1][0],fclim[clusters[i]-1][1][1]
+        #for i in range(len(faces_new)):
+           # print "x",fclim[clusters[i]-1][0][0],fclim[clusters[i]-1][0][1]
+            #print "y",fclim[clusters[i]-1][1][0],fclim[clusters[i]-1][1][1]
         try:
             cv2.imshow("Faces found",face_categ[0])
             cv2.waitKey(3)
