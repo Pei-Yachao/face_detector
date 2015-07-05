@@ -17,6 +17,7 @@ from compiler.ast import flatten
 #"../config/haarcascade_profileface.xml"]
 faceCascName = ["../config/haarcascade_frontalface_alt.xml"]
 faceCascade = []
+faces_view = 0
 
 class image_converter:
     def __init__(self):
@@ -26,7 +27,7 @@ class image_converter:
         self.facenum_pub = rospy.Publisher("faces_number",Int32)
         cv2.namedWindow("Face Found",1)
         self.bridge = CvBridge()
-        self.image_sub = rospy.Subscriber("/camera/rgb/image_raw",Image,self.callback)
+        self.image_sub = rospy.Subscriber("/image_raw",Image,self.callback)
     def callback(self,data):
         try:
             cv2.image = self.bridge.imgmsg_to_cv2(data,"bgr8")
@@ -56,7 +57,9 @@ class image_converter:
             faces_new[i] = cv2.image[faces_new[i][0]-20:(faces_new[i][0]+faces_new[i][2]+20),faces_new[i][1]-20:(faces_new[i][1]+faces_new[i][3]+20)]
 
         try:
-            cv2.imshow("Faces found",faces_new[0])
+            if len(faces_new) > 0:
+                faces_view = faces_new[0]
+            cv2.imshow("Faces found",faces_view)
             cv2.waitKey(3)
             for i in range(len(faces_new)):
                 self.image_pub.publish(self.bridge.cv2_to_imgmsg(faces_new[i],"bgr8"))
