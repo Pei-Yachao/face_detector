@@ -13,7 +13,7 @@ from compiler.ast import flatten
 import matplotlib.pyplot as plt
 import numpy
 import scipy.cluster.hierarchy as hcluster
-#import face_detector.msg 
+import face_detector.msg 
 
 faceCascName = ["../config/haarcascade_frontalface_alt2.xml","../config/haarcascade_frontalface_alt.xml","../config/haarcascade_frontalface_default.xml",
 "../config/haarcascade_profileface.xml"]

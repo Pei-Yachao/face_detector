@@ -37,8 +37,11 @@ rospy
 #running sample    
 1. roscore  
 2. rosrun  uvc_camera uvc_camera_node  
-3. rosrun face_detector face_detector_main.py  
+3. rosrun face_detector face_detector.py  
 
+#topic information  
+/faces : image of faces(sensor_msgs/Image type)  
+/faces_number : number of faces  
 
   
   

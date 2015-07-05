@@ -128,8 +128,7 @@ class image_converter:
             #self.facenum_pub.publish(len(set(clusters))
         except CvBridgeError, e:
             print e
-        facenum = Int32(len(set(clusters)))
-        self.facenum_pub.publish(len(set(clusters)))
+        self.facenum_pub.publish(len(set(clusters))
 
 def main(args):
     ic = image_converter()
