@@ -31,15 +31,20 @@ libblas-dev
 
 #installation    
 1.cd /path/to/ros_ws/src && git clone https://github.com/demulab/face_detector.git  
- 
-2.cd /path/to/ros_ws/src/face_detector/scripts
-3.sed -i s//image_raw//your/image_topic/image_raw/g face_detector_main.py  
-4.cd /path/to/ros_ws  
-5.catkin_make  
+2.cd /path/to/ros_ws/src/face_detector/scripts  
+3.chmod +x dep.bash  
+4.sudo ./dep.bash  
+5.sed -i s//image_raw//your/image_topic/image_raw/g face_detector_main.py  
+6.cd /path/to/ros_ws  
+7.catkin_make  
 
 #running sample    
+in webcam  
 1. roscore  
 2. rosrun  uvc_camera uvc_camera_node  
+3. rosrun face_detector face_detector.py  
+in xtion  
+1. roslaunch openni2_launch openni2.launch  
 3. rosrun face_detector face_detector.py  
 
 #topic information  
