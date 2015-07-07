@@ -25,8 +25,8 @@ image_transport
 sensor_msgs  
 std_msgs  
 rospy  
-gfortran
-liblapack-dev
+gfortran  
+liblapack-dev  
 libblas-dev
 
 #installation    
