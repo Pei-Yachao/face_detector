@@ -50,6 +50,9 @@ in xtion
 #topic information  
 /faces : image of faces(sensor_msgs/Image type)  
 /faces_number : number of faces  
+/faces_horizontal_dir : the horizontal direction of faces corresponding to the /faces topic   
+/faces_vertical_dir : the vertical direction of faces corresponding to the /faces topic  
+
 
   
   
