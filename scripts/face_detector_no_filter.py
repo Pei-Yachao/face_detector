@@ -8,6 +8,7 @@ import array
 import numpy as np
 from std_msgs.msg import String
 from std_msgs.msg import Int32
+from std_msgs.msg import Float64
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from compiler.ast import flatten
@@ -17,13 +18,15 @@ from compiler.ast import flatten
 #"../config/haarcascade_profileface.xml"]
 faceCascName = ["../config/haarcascade_frontalface_alt.xml"]
 faceCascade = []
-
+fov = [58,45]
 class image_converter:
     def __init__(self):
         for i in range(len(faceCascName)):
             faceCascade.append(cv2.CascadeClassifier(faceCascName[i]))
         self.image_pub = rospy.Publisher("faces",Image)
         self.facenum_pub = rospy.Publisher("faces_number",Int32)
+        self.facedir_hori_pub=rospy.Publisher("faces_horizontal_dir",Float64)
+        self.facedir_ver_pub=rospy.Publisher("faces_vertical_dir",Float64)
         cv2.namedWindow("Face Found",1)
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/camera/rgb/image_raw",Image,self.callback)
@@ -52,14 +55,31 @@ class image_converter:
         #for face in faces:
         #    for (x, y, w, h) in face:
         #        cv2.rectangle(cv2.image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        faces_dir = [[0.0,0.0] for i in range(len(faces_new))]
         for i in range(len(faces_new)):
-            faces_new[i] = cv2.image[faces_new[i][0]-20:(faces_new[i][0]+faces_new[i][2]+20),faces_new[i][1]-20:(faces_new[i][1]+faces_new[i][3]+20)]
-
+            xmin = faces_new[i][0] - 20
+            xmax = faces_new[i][0] + faces_new[i][2] + 20
+            ymin = faces_new[i][1] - 20
+            ymax = faces_new[i][1] + faces_new[i][3] + 20
+            #boundary check
+            if xmin < 0:
+                xmin = 0
+            if xmax > width:
+                xmax = width
+            if ymin < 0:
+                ymin = 0
+            if ymax > height:
+                ymax = height
+            faces_new[i] = cv2.image[xmin:xmax,ymin:ymax]
+            faces_dir[i][0] = Float64((faces_new[i][0] + faces_new[i][2] - width/2)*fov[0]/width)
+            faces_dir[i][1] = Float64((faces_new[i][1] + faces_new[i][3] - height/2)*fov[1]/height)
         try:
             cv2.imshow("Faces found",faces_new[0])
             cv2.waitKey(3)
             for i in range(len(faces_new)):
                 self.image_pub.publish(self.bridge.cv2_to_imgmsg(faces_new[i],"bgr8"))
+                self.facedir_hori_pub.publish(faces_dir[i][0])
+                self.facedir_ver_pub.publish(faces_dir[i][1])
         except CvBridgeError, e:
             print e
         facenum = Int32(len(faces_new))
