@@ -6,7 +6,6 @@ project(face_detector)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
-  roscpp
   rospy
   sensor_msgs
   std_msgs
@@ -84,11 +83,11 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime cv_bridge rospy sensor_msgs std_msgs
 #  INCLUDE_DIRS include
 #  LIBRARIES face_detector
 #  CATKIN_DEPENDS cv_bridge roscpp rospy sensor_msgs std_msgs
-#  DEPENDS system_lib
+  DEPENDS system_lib
 )
 
 ###########
@@ -108,16 +107,16 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(face_detector src/face_detector.cpp)
+#add_executable(face_detector src/face_detector.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(face_detector_node face_detector_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(face_detector
-  ${catkin_LIBRARIES}
-)
+#target_link_libraries(face_detector
+#  ${catkin_LIBRARIES}
+#)
 
 #############
 ## Install ##
