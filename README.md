@@ -45,7 +45,7 @@ in webcam
 3. rosrun face_detector face_detector.py  
 in xtion  
 1. roslaunch openni2_launch openni2.launch  
-3. rosrun face_detector face_detector.py  
+3. rosrun face_detector face_detector_new.py  
 
 #topic information  
 /faces : image of faces(sensor_msgs/Image type)  
